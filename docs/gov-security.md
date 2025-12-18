@@ -157,3 +157,8 @@ By binding proofs to immutable circuit intent, DCF enables trustless verificatio
 - Scroll — *zkEVM Circuit Design Notes*  
 - Polygon Hermez — *zkRollup Circuit Specifications*  
 - Freire, A. — *Deterministic Circuit Fingerprinting*, Independent Research, 2025
+
+
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a9bc4235-635c-4d2f-8238-b7d607a3ae2a" />
+
