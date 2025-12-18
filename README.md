@@ -19,7 +19,7 @@ The **Mobile Oracle App** transforms an ordinary smartphone into a sovereign cry
 - forming local cryptographic consensus  
 
 All **local-first**, preserving autonomy, integrity, and auditability.
-
+<img width="540" height="1200" alt="image" src="https://github.com/user-attachments/assets/32e24e5a-f22c-415a-992d-d907c5e0711c" />
 ---
 
 # 📱 2. Core Capabilities
@@ -249,21 +249,11 @@ It is:
 All rights reserved.
 Unauthorized use, copying, redistribution, or commercial exploitation is strictly prohibited.
 
----
-
-<img width="540" height="1200" alt="image" src="https://github.com/user-attachments/assets/32e24e5a-f22c-415a-992d-d907c5e0711c" />
 
 
----
-
-<img width="540" height="1200" alt="image" src="https://github.com/user-attachments/assets/5780aa92-a613-489b-8b67-e82d91f7551d" />
-
----
-
-<img width="540" height="1200" alt="image" src="https://github.com/user-attachments/assets/d41a725a-cb04-4b26-9784-a8df2b25393e" />
 
 
----
+
 
 
 
