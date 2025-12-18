@@ -243,3 +243,10 @@ It is:
 
 # 🔥 **a sovereign oracle you can carry in your pocket.**
 
+---
+
+© 2025 Armando Freire (Terra Dourada)
+All rights reserved.
+Unauthorized use, copying, redistribution, or commercial exploitation is strictly prohibited.
+
+
