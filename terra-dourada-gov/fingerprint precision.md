@@ -5,6 +5,7 @@
 > The example below illustrates **semantic drift** in its simplest form.
 >
 > ---
+> Deterministic similarity experiment showing structural, hash-level and Base64-based comparison behavior across semantically related inputs.
 ><img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/7f9c38d8-b6ac-446b-a73a-048b301dc948" />
 
 ---
