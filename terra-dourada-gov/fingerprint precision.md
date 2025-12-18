@@ -5,7 +5,10 @@
 > The example below illustrates **semantic drift** in its simplest form.
 >
 > ---
->
+><img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/7f9c38d8-b6ac-446b-a73a-048b301dc948" />
+
+---
+
 > ## 1. The Circuit as Mathematical Intent
 >
 > A zero-knowledge circuit does not describe *how* a computation runs —  
