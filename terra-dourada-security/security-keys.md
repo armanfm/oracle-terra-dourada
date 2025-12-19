@@ -164,3 +164,9 @@ This architecture applies layered security with clearly separated responsibiliti
 
 The absence of any single point of cryptographic failure is a deliberate design choice.
 Security is achieved not by trusting one mechanism, but by requiring multiple independent guarantees to hold simultaneously.
+
+
+
+
+
+
