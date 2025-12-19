@@ -1,65 +1,71 @@
-## 1. Deterministic Circuit Fingerprinting (DCF)
+# Deterministic Circuit Fingerprinting (DCF)
 
-Deterministic Circuit Fingerprinting defines a verifiable, deterministic identity
+Deterministic Circuit Fingerprinting (DCF) defines a **verifiable, deterministic identity**
 for zero-knowledge circuits, independent of witnesses and proofs.
 
-It separates **circuit intent** from **proof execution**.
+It establishes a strict separation between **circuit intent** and **proof execution**.
 
 ---
 
-### 1.1 Structural Circuit Fingerprint (Configure-Level)
+## 1. Circuit Identity Layers
 
-All structural markers are hashed and concatenated deterministically.
+### 1.1 Structural Circuit Fingerprint (Configuration-Level)
+
+The structural fingerprint is computed by deterministically hashing and concatenating
+all semantic and structural markers that define a circuit’s intent.
 
 **Purpose:**
 - Detect semantic changes
 - Enable early auditing
-- Debug circuit identity
-- Operates even without Verifying Key generation
+- Support circuit evolution tracking
+- Debug circuit identity mismatches
+- Operate even before Verifying Key generation
 
-**Limitation:**  
-This layer reflects semantic structure, not the compiled cryptographic object.
+**Limitation:**
+This layer reflects **semantic structure**, not the compiled cryptographic object.
+
+It is intended for observability and governance, not final cryptographic authority.
 
 ---
 
 ### 1.2 Verifying Key Fingerprint (Canonical Identity)
 
-The **Verifying Key (VK)** is the canonical cryptographic compilation of the circuit.
+The Verifying Key (VK) is the canonical cryptographic compilation of a circuit.
 
 **Properties:**
 - Deterministic
-- Independent of witness
+- Independent of witness data
 - Identical across platforms for the same circuit
 - Changes on any semantic modification
 
-Therefore:
+**Therefore:**
 
 > **The hash of the Verifying Key is the cryptographic identity of the circuit.**
 
-This is the strongest possible fingerprint.
+This is the strongest and final fingerprint.
 
 ---
 
-## 2. Why the Proof Is Not Fingerprinted
+## 2. Why Proofs Are Not Fingerprinted
 
-A frequent misconception:
+A frequent misconception is:
 
-> *“Can we fingerprint or compare individual proofs?”*
+> *“Can individual proofs be fingerprinted or compared?”*
 
-**No — and we must not.**
+**No — and they must not be.**
 
 **Reasons:**
-- Proofs are randomized
-- Proofs differ per execution
-- Fingerprinting proofs would break Zero-Knowledge guarantees
-- Semantic intent is not encoded in proofs
+- Proofs are randomized by design
+- Proofs differ on every execution
+- Fingerprinting proofs would break zero-knowledge guarantees
+- Proofs do not encode semantic intent
 
-| Object   | Carries Intent? |
-|----------|------------------|
-| Circuit  | ✅ Yes |
-| VK       | ✅ Yes |
-| Proof    | ❌ No |
-| Witness  | ❌ No |
+| Object   | Carries Intent |
+|---------|----------------|
+| Circuit | ✅ Yes |
+| VK      | ✅ Yes |
+| Proof   | ❌ No |
+| Witness | ❌ No |
 
 DCF operates **above proofs**, not inside them.
 
@@ -69,97 +75,83 @@ DCF operates **above proofs**, not inside them.
 
 ### Aggregator / Verifier Flow
 
-1. Aggregator knows the expected circuit fingerprint
-2. Prover submits:
-   - the proof
-   - optional circuit fingerprint or VK hash
-3. Aggregator verifies:
-   - proof validity (ZK)
-   - fingerprint equality (identity)
+- The aggregator knows the expected circuit fingerprint
+- The prover submits:
+  - a zero-knowledge proof
+  - optionally, the circuit fingerprint or VK hash
+- The aggregator verifies:
+  - proof validity (cryptographic correctness)
+  - fingerprint equality (circuit identity)
 
-If fingerprints mismatch → **proof rejected**, regardless of validity.
+**If fingerprints mismatch, the proof is rejected — regardless of proof validity.**
+
+This ensures that correctness is always bound to **authorized circuit intent**.
 
 ---
 
-## 4. Similarity vs Equality
+## 4. Equality vs Similarity
 
-Two modes are supported:
+DCF supports two distinct modes with **strict separation of purpose**.
 
 ### 🔒 Strict Mode (Production)
+
 - Exact fingerprint match
-- Binary decision
+- Binary decision (accept / reject)
 - Full integrity guarantee
+- Used for authorization and enforcement
 
 ### 🔬 Similarity Mode (Audit / Research)
+
 - Bit-level similarity metrics
-- Useful for:
-  - evolution tracking
+- Used exclusively for:
+  - circuit evolution tracking
   - regression analysis
-  - research tooling
+  - semantic drift observation
+  - debugging and research tooling
 
-> **Note:** Similarity is never required for security — only for observability.
-
----
-
-## 5. Relationship to Existing Systems
-
-Similar concepts exist implicitly in production ZK systems:
-
-- **zkSync (Matter Labs)** — internal circuit versioning and constraint hashes
-- **Scroll** — deterministic circuit identifiers in aggregation pipelines
-- **Polygon Hermez** — fixed circuit identities bound to verifier contracts
-
-DCF differs by:
-- making the identity explicit,
-- being framework-agnostic,
-- auditable,
-- and decoupled from infrastructure.
+**Important:**
+Similarity is never used for security decisions.
+Only equality is authoritative.
 
 ---
 
-## 6. Security Properties
+## 5. Security Properties
 
-DCF provides:
+DCF provides the following guarantees:
 
-- ✅ Proof-of-Origin
+- ✅ Proof-of-Origin (circuit-level)
 - ✅ Semantic Integrity
 - ✅ Tamper Detection
-- ✅ No Trusted Setup Extension
-- ✅ No External Registry
-- ✅ Zero-Knowledge Preservation
+- ✅ Deterministic Identity
+- ✅ No Trusted Registry
+- ✅ No Extension of Trusted Setup
+- ✅ Full Zero-Knowledge Preservation
 
 ---
 
-## 7. What DCF Is Not
+## 6. What DCF Is Not
+
+DCF is explicitly **not**:
 
 - ❌ A replacement for proof verification
 - ❌ A witness validator
-- ❌ A proof compression mechanism
+- ❌ A proof comparison mechanism
+- ❌ A proof compression scheme
 - ❌ A semantic analyzer of execution data
 
-It is a **circuit identity layer**.
+DCF is a **circuit identity layer**.
 
 ---
 
-## 8. Conclusion
+## 7. Conclusion
 
-> *“A proof can lie about execution.  
-> A circuit cannot lie about intent.”*
+> **A proof can lie about execution.  
+> A circuit cannot lie about intent.**
 
-Deterministic Circuit Fingerprinting establishes a missing layer in ZK systems:  
-**sovereign, mathematical identity of computation**.
+Deterministic Circuit Fingerprinting establishes a missing layer in zero-knowledge systems:
+a **sovereign, mathematical identity of computation**.
 
-By binding proofs to immutable circuit intent, DCF enables trustless verification  
-**without trust assumptions**.
-
----
-
-## References
-
-- Electric Coin Company — *Halo2 Proof System*, 2022  
-- Matter Labs — *zkSync Architecture Documentation*  
-- Scroll — *zkEVM Circuit Design Notes*  
-- Polygon Hermez — *zkRollup Circuit Specifications*  
-- Freire, A. — *Deterministic Circuit Fingerprinting*, Independent Research, 2025
+By binding proofs to immutable circuit intent,
+DCF enables trustless verification **without trust assumptions**.
 
 
