@@ -1,1 +1,424 @@
-oi
+use warp::{self, Filter, Reply};
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
+use std::sync::{Arc, Mutex};
+use std::time::{SystemTime, UNIX_EPOCH};
+use std::collections::HashMap;
+use base64::engine::{general_purpose, Engine as _};
+use reqwest;
+
+use std::env;
+
+use hmac::{Hmac, Mac};
+use sha2::{Sha256, Digest};
+use zeroize::Zeroizing;
+use rand::RngCore;
+use pasta_curves::group::ff::PrimeField;
+use pasta_curves::pallas::Base as Fp;
+
+// Dilithium PQC
+use crystals_dilithium::dilithium2::Keypair;
+
+type HmacSha256 = Hmac<Sha256>;
+type Storage = Arc<Mutex<Vec<Proof>>>;
+
+// =========================================================
+// STRUCTS
+// =========================================================
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
+struct Vote {
+    voter_id: String,
+    candidate: String,
+    #[serde(flatten)]
+    extra_fields: HashMap<String, Value>,
+}
+
+#[derive(Serialize, Clone)]
+struct Proof {
+    urn_id: String,
+    vote: Vote,
+    timestamp: u64,
+    hash: Vec<u8>,
+    proof: String,
+}
+
+#[derive(Deserialize)]
+struct RegisterVk {
+    vk_b64: String,
+}
+
+// =========================================================
+// FUNÇÃO AUXILIAR → DISTÂNCIA DE HAMMING
+// =========================================================
+fn hamming_distance(a: &[u8], b: &[u8]) -> u32 {
+    a.iter()
+        .zip(b.iter())
+        .map(|(x, y)| (x ^ y).count_ones())
+        .sum()
+}
+
+// =========================================================
+// 🔥 DK-PQC-HMAC (SUA FUNÇÃO ORIGINAL, INALTERADA)
+// =========================================================
+
+fn dk_pqc_hmac(
+    key: &[u8],
+    payload: &[u8],
+    keypair: &Keypair,
+) -> [u8; 32] {
+
+    let mut mac1 = HmacSha256::new_from_slice(key).unwrap();
+    mac1.update(payload);
+    let h1 = mac1.finalize().into_bytes();
+
+    let signature = keypair.secret.sign(payload);
+    let h2 = Sha256::digest(&signature);
+
+    let mut mix = [0u8; 32];
+    for i in 0..32 {
+        mix[i] = h1[i] ^ h2[i];
+    }
+
+    let mut mac_final = HmacSha256::new_from_slice(key).unwrap();
+    mac_final.update(&mix);
+
+    mac_final.finalize().into_bytes().into()
+}
+
+// =========================================================
+// 🔥 PQC-HASH → Fp  (COM XOR + HAMMING DISTANCE)
+// =========================================================
+
+fn pqc_sign_hash_to_fp(payload: &[u8], keypair: &Keypair) -> Fp {
+
+    println!("===============================");
+    println!("🔍 INICIANDO PIPELINE PQC → FP");
+    println!("===============================");
+
+    // 1) HASH PURO DO PAYLOAD
+    let h1 = Sha256::digest(payload);
+    let h1_hex = hex::encode(&h1);
+    println!("🧩 [H1] SHA256(payload)");
+    println!("    {}", h1_hex);
+
+    // 2) ASSINA O HASH PURO EM PQC
+    let signature = keypair.secret.sign(&h1);
+    println!("🖊️  Assinatura PQC ({} bytes)", signature.len());
+
+    // 3) HASH DA ASSINATURA PQC
+    let h2 = Sha256::digest(&signature);
+    let h2_hex = hex::encode(&h2);
+    println!("🧬 [H2] SHA256(signature)");
+    println!("    {}", h2_hex);
+
+    // ===================================================
+    // 🔥 XOR ENTRE H1 E H2 — PROVA DE INDEPENDÊNCIA
+    // ===================================================
+    let xor_bytes: Vec<u8> = h1.iter().zip(h2.iter()).map(|(a, b)| a ^ b).collect();
+    let xor_hex = hex::encode(&xor_bytes);
+    let diff_bits = hamming_distance(&h1, &h2);
+
+    println!("------------------------------");
+    println!("⚡ XOR(H1, H2) = {}", xor_hex);
+    println!("🧮 Bits diferentes (Hamming): {}", diff_bits);
+    println!("📊 Percentual: {:.2}%", (diff_bits as f64 / 256.0) * 100.0);
+    println!("------------------------------");
+
+    // 4) CONVERTER EM FP
+    let limbs = [
+        u64::from_le_bytes(h2[0..8].try_into().unwrap()),
+        u64::from_le_bytes(h2[8..16].try_into().unwrap()),
+        u64::from_le_bytes(h2[16..24].try_into().unwrap()),
+        u64::from_le_bytes(h2[24..32].try_into().unwrap()),
+    ];
+
+    println!("🧮 Fp LIMBS:");
+    println!("    LIMB0 = {}", limbs[0]);
+    println!("    LIMB1 = {}", limbs[1]);
+    println!("    LIMB2 = {}", limbs[2]);
+    println!("    LIMB3 = {}", limbs[3]);
+
+    let fp = Fp::from_raw(limbs);
+
+    println!("🔢 Fp FINAL (repr hex): {}", hex::encode(fp.to_repr()));
+    println!("===============================");
+
+    fp
+}
+
+// =========================================================
+// PINATA
+// =========================================================
+
+const PINATA_JSON_ENDPOINT: &str = "https://api.pinata.cloud/pinning/pinJSONToIPFS";
+
+// =========================================================
+// MAIN BACKEND
+// =========================================================
+
+#[tokio::main]
+async fn main() {
+    let storage: Storage = Arc::new(Mutex::new(Vec::new()));
+    let vk_storage: Arc<Mutex<Option<String>>> = Arc::new(Mutex::new(None));
+
+    let urn_id = "TERRADOURADA_URN_01".to_string();
+
+    // 🔥 Gerar chave HMAC 256 bits
+    let mut hmac_bytes = [0u8; 32];
+    rand::thread_rng().fill_bytes(&mut hmac_bytes);
+    let hmac_key = Zeroizing::new(hmac_bytes.to_vec());
+
+    println!("🔐 HMAC gerada (servidor → prover)");
+
+    // PINATA JWT
+    let pinata_jwt = env::var("PINATA_JWT")
+        .expect("❌ Variável PINATA_JWT ausente!");
+
+    // PQC keypair
+    let pqc_keypair = Arc::new(Keypair::generate(None));
+
+    let hmac_filter = warp::any().map(move || hmac_key.clone());
+    let pqc_filter = warp::any().map(move || pqc_keypair.clone());
+    let storage_filter = warp::any().map(move || storage.clone());
+    let vk_filter = warp::any().map(move || vk_storage.clone());
+    let urn_filter = warp::any().map(move || urn_id.clone());
+    let jwt_filter = warp::any().map(move || pinata_jwt.clone());
+
+    // =============================================================
+    // 🔥 POST /mel — fluxo principal
+    // =============================================================
+
+    let mel_post_route = warp::post()
+        .and(warp::path("mel"))
+        .and(warp::body::json())
+        .and(storage_filter.clone())
+        .and(urn_filter.clone())
+        .and(hmac_filter.clone())
+        .and(pqc_filter.clone())
+        .and(vk_filter.clone())
+        .and(jwt_filter.clone())
+        .and_then(
+            |value: Value,
+             storage: Storage,
+             urn_id: String,
+             hmac_key: Zeroizing<Vec<u8>>,
+             pqc_keypair: Arc<Keypair>,
+             vk_store: Arc<Mutex<Option<String>>>,
+             jwt: String| async move {
+
+                println!("📥 [/mel] JSON recebido: {}", value);
+
+                let voter_id = value.get("autor")
+                    .or(value.get("cid_autor"))
+                    .or(value.get("usuario"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("anonimo")
+                    .to_string();
+
+                let candidate = value.get("candidato")
+                    .or(value.get("voto"))
+                    .or(value.get("produto"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("desconhecido")
+                    .to_string();
+
+                let vote = Vote {
+                    voter_id,
+                    candidate,
+                    extra_fields: serde_json::from_value(value.clone()).unwrap(),
+                };
+
+                let timestamp = SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .unwrap()
+                    .as_secs();
+
+                let vote_json = serde_json::to_string(&vote).unwrap();
+                let payload_str = format!("{}:{}", vote_json, timestamp);
+
+                println!("===============================");
+                println!("📝 PAYLOAD CRU:");
+                println!("{}", payload_str);
+                println!("===============================");
+
+                // 🔥 HASH ORIGINAL PARA REFERÊNCIA AUDITÁVEL
+                let h1 = Sha256::digest(payload_str.as_bytes());
+                println!("🧩 SHA256(payload_str) = {}", hex::encode(&h1));
+
+                // 🔥 HMAC SOBERANA
+                let tag_bytes = dk_pqc_hmac(
+                    &hmac_key,
+                    payload_str.as_bytes(),
+                    &pqc_keypair,
+                );
+                let tag_hex = hex::encode(tag_bytes);
+
+                // 🔥 GERAR FP SOBERANO COM LOGS COMPLETOS
+                let hash_fp_pqc = pqc_sign_hash_to_fp(
+                    payload_str.as_bytes(),
+                    &pqc_keypair,
+                );
+
+                let hash_fp_bytes = hash_fp_pqc.to_repr().as_ref().to_vec();
+
+                // ==========================
+                // CHAMAR PROVER
+                // ==========================
+
+                let prover_url = "http://127.0.0.1:8081/prove";
+
+                let payload_json = serde_json::json!({
+                    "fp_bytes": hash_fp_bytes,
+                    "hmac": tag_hex,
+                    "original": payload_str
+                });
+
+                let client = reqwest::Client::new();
+                let resp = client.post(prover_url).json(&payload_json).send().await;
+
+                let (proof_b64, returned_hmac) = match resp {
+                    Ok(r) => {
+                        let body = r.text().await.unwrap_or_default();
+                        println!("📥 Prover -> {}", body);
+
+                        let json: Value = serde_json::from_str(&body).unwrap_or(Value::Null);
+
+                        let proof = json.get("proof_b64")
+                            .and_then(|v| v.as_str())
+                            .map(String::from);
+
+                        let hmac_ret = json.get("hmac")
+                            .and_then(|v| v.as_str())
+                            .map(String::from);
+
+                        (proof, hmac_ret)
+                    }
+                    Err(e) => {
+                        println!("❌ Erro ao chamar prover: {:?}", e);
+                        return Ok::<_, warp::Rejection>(
+                            warp::reply::json(&serde_json::json!({"error": "erro no prover"}))
+                                .into_response()
+                        );
+                    }
+                };
+
+                // ============================================================
+                // 🔥 VALIDAR HMAC —— SEGURANÇA SOBERANA
+                // ============================================================
+
+                if returned_hmac.clone().unwrap_or_default() != tag_hex {
+                    println!("❌ HMAC NÃO CONFERE — Prova rejeitada!");
+                    return Ok::<_, warp::Rejection>(
+                        warp::reply::json(&serde_json::json!({
+                            "error": "HMAC inválida"
+                        }))
+                        .into_response()
+                    );
+                }
+
+                println!("🟢 HMAC CONFERE — prova legítima!");
+
+                let Some(proof_b64) = proof_b64 else {
+                    return Ok::<_, warp::Rejection>(
+                        warp::reply::json(&serde_json::json!({"error": "prova ausente"}))
+                            .into_response()
+                    );
+                };
+
+                // ============================================================
+                // PUBLICAR NO IPFS
+                // ============================================================
+
+                let final_json = serde_json::json!({
+                    "urn_id": urn_id,
+                    "vote": vote,
+                    "timestamp": timestamp,
+                    "proof_bytes": proof_b64,
+                    "verifying_key": vk_store.lock().unwrap().clone()
+                });
+
+                let client_pin = reqwest::Client::new();
+
+                if let Ok(resp_pin) = client_pin
+                    .post(PINATA_JSON_ENDPOINT)
+                    .header("Authorization", jwt)
+                    .json(&final_json)
+                    .send()
+                    .await
+                {
+                    if let Ok(txt) = resp_pin.text().await {
+                        if let Ok(json) = serde_json::from_str::<Value>(&txt) {
+                            println!("📦 Pinata OK → CID retornado");
+                            return Ok::<_, warp::Rejection>(
+                                warp::reply::json(&json).into_response()
+                            );
+                        }
+                    }
+                }
+
+                Ok::<_, warp::Rejection>(
+                    warp::reply::json(&serde_json::json!({"error": "falha no IPFS"}))
+                        .into_response()
+                )
+            });
+
+    // =============================================================
+    // VK register
+    // =============================================================
+
+    let register_vk_route = warp::post()
+        .and(warp::path("register_vk_id"))
+        .and(warp::body::json::<RegisterVk>())
+        .and(vk_filter.clone())
+        .and_then(|body: RegisterVk, vk_store: Arc<Mutex<Option<String>>>| async move {
+
+            println!("📥 [/register_vk_id] VK recebida!");
+
+            let decoded = match general_purpose::STANDARD.decode(&body.vk_b64) {
+                Ok(bytes) => bytes,
+                Err(_) => match general_purpose::URL_SAFE_NO_PAD.decode(&body.vk_b64) {
+                    Ok(bytes2) => bytes2,
+                    Err(e) => {
+                        println!("❌ VK inválida: {:?}", e);
+                        return Ok::<_, warp::Rejection>(
+                            warp::reply::json(&serde_json::json!({
+                                "success": false,
+                                "message": format!("VK inválida: {:?}", e)
+                            }))
+                            .into_response()
+                        );
+                    }
+                }
+            };
+
+            let text = String::from_utf8_lossy(&decoded).to_string();
+            println!("🔑 VK decodificada armazenada!");
+
+            *vk_store.lock().unwrap() = Some(text);
+
+            Ok::<_, warp::Rejection>(
+                warp::reply::json(&serde_json::json!({
+                    "success": true,
+                    "message": "VK registrada"
+                }))
+                .into_response()
+            )
+        });
+
+    let mel_get_route = warp::get()
+        .and(warp::path("mel"))
+        .and(storage_filter.clone())
+        .and_then(|storage: Storage| async move {
+            Ok::<_, warp::Rejection>(
+                warp::reply::json(&*storage.lock().unwrap())
+            )
+        });
+
+    let routes = mel_post_route
+        .or(mel_get_route)
+        .or(register_vk_route);
+
+    println!("🚀 Backend Terra Dourada rodando em http://127.0.0.1:8080");
+    warp::serve(routes).run(([127, 0, 0, 1], 8080)).await;
+}
