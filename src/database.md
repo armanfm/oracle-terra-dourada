@@ -117,15 +117,4 @@ Result:
 
 ---
 
-## Why this wins hackathons
-
-Most projects pitch “AI that does things”.
-This builds what’s missing: **infrastructure that makes AI trustworthy**:
-
-- auditable data (provenance)
-- verifiable integrity (ZK)
-- queryable history (Trust-State DB)
-- safe training (anti-poisoning)
-- cheap finalization (root on-chain)
-
-**In one sentence:** the Robot is the layer that turns “real-world events” into **verifiable knowledge**.
+.
