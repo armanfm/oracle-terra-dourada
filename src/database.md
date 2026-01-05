@@ -1,120 +1,89 @@
-## Robot = Trust-State Database (Deterministic Trust DB)
+Robot = Deterministic Trust-State Recorder (Anti-Hallucination Layer)
 
-In Terra Dourada Oracle, the **Robot** is not just a service that replies “valid / invalid”.
-It acts as a **deterministic provenance + integrity database** — a **trust-state database** that records, chains, and allows querying *what was verified*, *by which verifier*, *under which code version*, and *inside which checkpoint*.
+In Terra Dourada Oracle, the Robot is not an “AI” and not a decision-making agent.
+It is a deterministic trust-state recorder whose sole responsibility is to verify events and persist their verification results into an append-only ledger.
 
-This is exactly the layer Amadeus wants when it talks about **verification**, **auditability**, and **AI-ready data**.
+When the Robot evaluates an event, the result is stored in a sovereign ledger (Terra Dourada / Fractal GPT), which periodically consolidates this history into deterministic binary artifacts (e.g. TERRAMIN / mind.bin).
 
----
+The Robot does not generate interpretations, predictions, or probabilistic outputs.
+It records facts.
 
-## Why this is not a typical SQL database
+Why this avoids hallucination by design
 
-SQL stores “values”. The Robot stores **verifiable proofs and traces**:
+Hallucination happens when systems:
+- infer facts that are not explicitly present
+- interpolate missing information
+- rely on probabilistic recall or opaque models
 
-- **statement_hash** — what was proven
-- **commitment_hash / payload_hash** — deterministic commitment of the event
-- **cid (IPFS)** — data availability: retrievable bytes
-- **proof_id / receipt_id** — proof/receipt reference
-- **verifier_code_hash + version** — verifier identity (code hash/version)
-- **timestamp** — when it was verified
-- **result** — `valid=true/false` + minimal metadata
-- **parent_hash / chain_hash** — history chaining
-- **checkpoint_ref** — which rollup/checkpoint included it
+The Terra Dourada Robot does none of that.
 
-So it doesn’t “store data”; it stores **verifiable trust**.
+Every recorded entry corresponds to:
+- a concrete payload (CID / binary data)
+- a deterministic verification process
+- a reproducible result (valid / invalid)
+- a verifiable code version
 
----
+There is no “guessing” layer.
 
-## What the Robot provides to Amadeus
+If a fact exists, it exists because a receipt exists.
+If a receipt does not exist, the fact is treated as unknown.
 
-### 1) Provenance DB (Provenance Database)
-Instead of reprocessing everything to audit an event from “3 days ago”, an auditor/agent queries the Robot:
+This strict boundary between verified facts and absence of facts is what prevents hallucination.
 
-- “Does this CID correspond to a canonical payload?”
-- “Was this commitment proven under verifier vX?”
-- “Which checkpoint root included this event?”
-- “What is the trust chain up to the root settled on-chain?”
+What the Robot actually stores
 
-This turns auditing from “recompute the pipeline” into **deterministic receipt queries**.
+The Robot does not store business data or semantic meaning.
+It stores verification receipts, such as:
 
-### 2) Historical anti-poisoning dataset for AI Training
-For training (or *verified compute*), the major risk is **data poisoning**.
-The Robot enables objective filters:
+- payload or statement hash (what was verified)
+- CID or binary reference (where the data lives)
+- verifier code hash and version (who verified it)
+- timestamp (when it was verified)
+- result (valid = true / false)
+- linkage to a batch or checkpoint
 
-- Train **only** on entries with `valid=true`
-- Restrict by `verifier_code_hash` (approved verifier builds only)
-- Restrict by `checkpoint_range` (only ranges finalized on-chain)
-- *(Optional)* restrict by signed device/sensor type (if your statement/circuit includes it)
+This makes the ledger a trust index, not a knowledge base.
 
-This produces an “AI-ready” dataset with **lineage and mathematical verification**, not social trust.
+How this feeds Terra Dourada Fractal GPT
 
-### 3) Deterministic runtime for agents
-If Amadeus requires deterministic agents, agents need deterministic facts.
-The Robot becomes a **verifiable source of truth**:
+Terra Dourada Fractal GPT does not invent knowledge.
+It performs deterministic recall over an explicit memory (mind.bin).
 
-- “Fact A is legitimate because receipt X exists under verifier Y”
-- “This dataset slice is safe because it belongs to checkpoint root Z”
-- “This root is the latest consolidated rollup state”
+The Robot supplies that memory with verified facts only.
 
-Agents don’t “trust the internet”; they trust **receipts + verifier + chain**.
+As a result:
+- recall is limited to what was actually verified
+- semantic retrieval cannot exceed the factual boundary
+- every recalled item can be traced back to a receipt
 
----
+An LLM, if used, is strictly layered on top:
+- it formats explanations
+- it does not decide ranking or truth
+- it cannot introduce new facts
 
-## Data model: Receipt Ledger (append-only)
+This separation ensures that language generation never contaminates the factual substrate.
 
-The Robot maintains an **append-only receipt ledger**.
-Each receipt references the previous one (hash-chain) to prevent silent rewrites.
+How this fits with Rollup and Settlement
 
-**Receipt (conceptual example):**
-- `receipt_id`
-- `cid`
-- `statement_hash`
-- `payload_hash`
-- `proof_hash`
-- `verifier_code_hash`
-- `verifier_version`
-- `valid`
-- `ts`
-- `prev_receipt_hash`
-- `receipt_chain_hash`
-- `checkpoint_id` (when aggregated)
-- `checkpoint_root` (when confirmed)
+- The Robot verifies individual events and records receipts
+- The Rollup aggregates receipts into checkpoints
+- The ledger is consolidated into deterministic binaries
+- The blockchain (Solana, currently) anchors only the final root
 
-This gives you:
-- **practical immutability** (chained history)
-- **auditable replay** (anyone can validate the trail)
-- **portability** (the ledger can be replicated across nodes)
+Heavy data stays off-chain.
+Trust lives in receipts and binaries.
+The chain is used purely for finalization.
 
----
+Summary
 
-## Queries the Robot enables (the “DB” in practice)
+The Robot is not an oracle of opinions.
+It is a recorder of verified reality.
 
-Without relying on the UI, the Robot can serve objective answers:
+By enforcing:
+- deterministic verification
+- append-only history
+- explicit absence of facts
 
-- **GetReceipt(receipt_id)** → returns the full receipt
-- **GetByCID(cid)** → which receipt validated this CID
-- **GetByStatement(statement_hash)** → proof/result for a given statement
-- **GetLatestTrustState()** → latest verified root + verifier version
-- **GetRange(from, to)** → receipts in an interval (for audits)
-- **GetCheckpoint(checkpoint_id)** → root, range, aggregated proof, status
-- **VerifyDeterministically(payload/cid)** → yes/no + receipt (if it exists)
-
-This turns the Robot into a **trust index** — not just a “verification endpoint”.
-
----
-
-## How it fits with Rollup + Settlement
-
-- The Robot verifies individual events and produces receipts
-- The Rollup aggregates receipts → `checkpoint_root`
-- Robot2 verifies the checkpoint and maintains the **aggregated trust state**
-- The chain (Solana today) stores **only the root + minimal metadata**
-
-Result:
-- heavy data stays on IPFS (**data availability**)
-- trust lives in receipts/rollups (**verification**)
-- the chain is the **finalization anchor** (cheap + auditable)
-
----
+the Terra Dourada Oracle provides an anti-hallucination foundation for AI and agent systems built on Amadeus.
 
 .
