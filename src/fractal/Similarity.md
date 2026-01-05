@@ -1,209 +1,225 @@
-# How Terra Dourada Computes Similarity (Technical Explanation)
+# Deterministic Similarity Engine (Terra Dourada)
 
-Terra Dourada Brands does **not** decide outcomes, interpret meaning, or apply legal reasoning.  
-It performs **deterministic similarity measurement** over text, using multiple formal projections of the same input.
+This document explains **how Terra Dourada computes similarity**, independent of trademarks, legal context, or domain-specific interpretation.
 
-The core question the engine answers is:
+The engine is a **general-purpose deterministic similarity system** that operates on text identifiers and produces **auditable, reproducible similarity signals**.
 
-> **“Which element in the loaded set is the closest to this text, according to fixed, reproducible rules?”**
-
-Nothing more.
+It does **not** use embeddings, machine learning, probabilistic models, or adaptive training.
 
 ---
 
-## 1) Input Model
+## Core Idea
 
-The engine receives only:
+Similarity is computed by **comparing a query string against a fixed deterministic memory** and selecting the closest candidate using **explicit, explainable metrics**.
 
-- a **query string**
-- a **finite set of strings** loaded from a deterministic memory file (`mind.bin` / `TERRAMIN`)
+Given the same input and the same memory, the output is **always identical**.
 
 There is:
-- no external context
-- no training
-- no hidden state
-- no adaptive behavior
+- no randomness
+- no tuning
+- no hidden weights
 
 ---
 
-## 2) Deterministic Text Projections
+## Deterministic Memory
 
-Each string is projected into multiple **deterministic formal spaces**.  
-All projections are reproducible and do not depend on learning.
+All reference data is stored in a **binary memory file** (`.bin`, TERRAMIN format).
 
-### A) Byte-Level Projection (`bytes_pct`)
+This file is:
+- append-only at build time
+- immutable at runtime
+- versioned
+- verifiable via SHA-256
 
-The text is treated as a raw sequence of bytes and converted into a fixed-length bit vector.
+The engine never mutates memory during evaluation.
 
-This captures:
-- visual and orthographic structure
+---
+
+## Canonicalization
+
+Before comparison, text is canonicalized deterministically:
+
+- lowercasing
+- accent normalization (`á → a`, `ç → c`, etc.)
+- controlled whitespace normalization
+- UTF-8 validation
+
+This ensures stable behavior across platforms and languages.
+
+---
+
+## Similarity Metrics
+
+For each candidate in memory, the engine computes **multiple independent similarity metrics**.
+
+Each metric returns a value in the range:
+
+`0.0 → 1.0`
+
+---
+
+### 1) Byte Structure Similarity (`bytes_pct`)
+
+- Converts text into a fixed-length bit vector
+- Compares bit alignment position-by-position
+
+Captures visual / orthographic structure:
 - shared substrings
-- truncations and abbreviations
+- truncations
 - spacing and punctuation patterns
-- overall shape and length similarity
+- length and shape similarity
 
-This metric is strong at detecting **surface-form proximity**.
-
----
-
-### B) SHA-256–Derived Projection (Lossy) (`sha256_pct`)
-
-The text is:
-1. hashed using SHA-256
-2. converted into a lossy textual representation
-3. projected again into a bit vector
-
-This creates a **second, independent comparison space**.
-
-Purpose:
-- reduce over-reliance on direct visual similarity
-- introduce structural divergence under transformation
-- provide a complementary deterministic signal
-
-> This is **not** semantic AI and **not** cryptographic meaning.  
-> It is a deterministic transformation used for structural comparison.
+This is a **pure structural signal**.
 
 ---
 
-### C) Controlled Linguistic Projections (Extended Engine)
+### 2) SHA-256 Structural Similarity (`sha256_pct`)
 
-In the full engine implementation, additional deterministic metrics are computed:
+- Computes SHA-256 of each string
+- Applies a deterministic lossy UTF-8 projection
+- Converts the result into a bit vector
+- Compares bit similarity
 
-- **Levenshtein distance** — minimal edit distance after canonicalization
-- **Trigram Jaccard similarity** — local substring overlap
-- **Polynomial kernel over trigrams** — distributional pattern similarity
-
-All of these:
-- are rule-based
-- have fixed formulas
-- do not learn or adapt
-
----
-
-## 3) Metric Normalization
-
-Each metric produces a normalized value in the range **[0.0, 1.0]**.
-
-Example (conceptual):
-
-- `bytes_pct = 0.87`
-- `sha256_pct = 0.61`
-- `lev_pct = 0.79`
-- `tri_pct = 0.74`
-- `poly2_pct = 0.70`
-
-No metric is hidden.  
-No dynamic weighting is applied.
+This metric:
+- is deterministic
+- is not semantic
+- provides an independent structural divergence signal
+- prevents over-reliance on surface appearance
 
 ---
 
-## 4) Selection Rule (Deterministic)
+### 3) Base64 Structural Similarity (`base64_pct`)
 
-Depending on the engine mode, one of the following fixed rules is used.
+- Encodes the string in Base64
+- Converts the encoded form into a bit vector
+- Compares bit similarity
+
+Captures transformation-stable structure under encoding changes.
+
+---
+
+### 4) Levenshtein Similarity (`lev_pct`)
+
+- Computes edit distance on canonicalized ASCII text
+- Normalizes by maximum length
+- Produces a similarity score instead of a distance
+
+Captures:
+- insertions
+- deletions
+- substitutions
+
+---
+
+### 5) Trigram Jaccard Similarity (`tri_pct`)
+
+- Breaks text into overlapping trigrams
+- Computes Jaccard similarity between trigram sets
+
+Captures local overlap and shared fragments.
+
+---
+
+### 6) Polynomial Kernel on Trigrams (`poly2_pct`)
+
+- Counts trigram frequencies
+- Computes a normalized polynomial kernel (degree 2)
+
+Emphasizes repeated structural patterns.
+
+---
+
+## Selection Rule (Deterministic)
+
+Two fixed modes exist.
+
+---
 
 ### Simple Rule (Documented Default)
 
-```text
-winner_pct = max(bytes_pct, sha256_pct)
+**Rule:**
+`winner_pct = max(bytes_pct, sha256_pct)`
+
 Meaning:
+- no averaging
+- no composite scoring
+- the strongest signal wins
 
-no averaging
+This guarantees:
+- full explainability
+- stable rankings
+- absence of “magic scores”
 
-no composite scoring
+---
 
-the strongest signal wins
+### Extended Rule (Full Engine Mode)
 
-This ensures:
+**Rule:**
+`winner_pct = average(bytes_pct, sha256_pct, base64_pct, lev_pct, tri_pct, poly2_pct)`
 
-full explainability
-
-stable rankings
-
-absence of “magic scores”
-
-Extended Rule (Full Engine)
-text
-Copiar código
-winner_pct = average(Bytes, SHA, Base64, LEV, TRI, POLY2)
 Still:
+- fixed formula
+- no training
+- no runtime tuning
 
-fixed formula
+---
 
-no training
+## Stable Ordering
 
-no runtime tuning
+All candidates are:
+- evaluated with the same metrics
+- ranked by `winner_pct`
+- tie-broken using a **fixed deterministic priority order** (constant by implementation)
 
-5) Stable Ordering
-All candidates in the loaded set are:
-
-evaluated with the same metrics
-
-ranked by winner_pct
-
-tie-broken using fixed, deterministic rules
-
-Given the same input and the same memory, the output order is always identical.
+Given the same input and the same binary memory, the output order is always identical.
 
 This enables:
+- offline verification
+- reproducible audits
+- independent re-execution
 
-offline verification
+---
 
-reproducible audits
+## Why This Avoids Hallucination
 
-historical comparison
+The engine cannot hallucinate because:
+- it never generates new content
+- it only compares against existing memory
+- every score is derived from explicit calculations
+- every output references concrete stored entries
 
-6) What the Engine Intentionally Does NOT Do
-The engine does not:
+There is no probabilistic inference, no guessing, and no model creativity.
 
-infer meaning
+---
 
-understand intent
+## Separation of Concerns
 
-apply contextual judgment
+This engine computes similarity only.
 
-generalize beyond the loaded data
+Any interpretation (semantic, legal, domain-specific) must happen after, in a separate layer.
 
-hallucinate relationships
+This prevents:
+- authority laundering
+- hidden decision logic
+- fake intelligence claims
 
-Any interpretation happens outside the engine.
+---
 
-7) Why Hallucination Is Impossible
-Hallucination occurs when systems:
+## Summary
 
-extrapolate beyond data
+Terra Dourada similarity is:
+- deterministic
+- metric-driven
+- auditable
+- reproducible
+- domain-agnostic
+- hallucination-resistant
 
-fill missing gaps
+It is a **similarity engine**, not an AI judge.
 
-generate unseen associations
+The engine answers only one question:
 
-Terra Dourada prevents this by design:
+> **“Which stored identifier is structurally closest to this input, and why?”**
 
-only loaded entries can be compared
-
-if an item is not in mind.bin, it cannot appear
-
-similarity is measured, not inferred
-
-no metric generates new information
-
-The engine does not “find something similar.”
-It measures formal proximity.
-
-8) Output Semantics
-The engine outputs only:
-
-the closest element in the loaded set
-
-explicit similarity metrics
-
-the rule used to select the winner
-
-No interpretation is attached.
-
-One-Sentence Summary
-Terra Dourada does not infer similarity — it computes it deterministically across multiple formal projections of the same text.
-
-Or, even shorter:
-
-No learning. No guessing. Only measurable proximity.
+Nothing more. Nothing less.
 
