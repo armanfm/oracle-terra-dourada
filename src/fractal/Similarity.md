@@ -207,4 +207,3 @@ Or, even shorter:
 
 No learning. No guessing. Only measurable proximity.
 
-Copiar código
