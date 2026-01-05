@@ -6,6 +6,7 @@ The goal is not to compete with oracle networks, but to **address a different cl
 verifiable reality, not aggregated opinion.
 
 ---
+<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/f28e6acb-164c-421b-ba20-20c8826613bc" />
 
 ## How Oracles Traditionally Work
 
