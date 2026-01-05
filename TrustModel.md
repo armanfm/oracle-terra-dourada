@@ -236,3 +236,32 @@ Terra Dourada answers:
 > **“What fact can be independently verified?”**
 
 Both models are complementary — but fundamentally different.
+
+---
+
+## Non-Goal: Replacing Consensus-Based Oracle Models
+
+Terra Dourada **does not replace traditional consensus-based oracle systems**.
+
+Consensus mechanisms are required when multiple valid answers may exist, such as:
+- market prices
+- social or economic states
+- aggregated or subjective values
+
+Terra Dourada addresses a **different problem domain**.
+
+Its purpose is to:
+- deterministically verify that a specific event or observation occurred
+- record that fact with cryptographic integrity
+- preserve an auditable, append-only trust history
+
+For this reason:
+- Terra Dourada verifies facts, not values
+- it records observations, not opinions
+- it does not aggregate or vote on external data
+- it complements consensus systems rather than competing with them
+
+Both models can coexist:
+- consensus systems decide *what value to accept*
+- Terra Dourada proves *what happened and how*
+
