@@ -246,9 +246,14 @@ It is:
 
 ---
 
-© 2025 Armando Freire (Terra Dourada)
+Copyright (c) 2025 Armando Freire (Terra Dourada)
+
 All rights reserved.
-Unauthorized use, copying, redistribution, or commercial exploitation is strictly prohibited.
+
+This software and documentation are proprietary.
+No permission is granted to use, copy, modify, distribute,
+or sell this material without explicit written consent.
+
 
 
 
