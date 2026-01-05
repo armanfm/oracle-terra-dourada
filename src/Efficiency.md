@@ -56,6 +56,7 @@ Observed execution cost:
 - **Transaction fee:** `~0.000005 SOL`
 - **Network:** Solana devnet
 - **On-chain payload:** a single batch root hash
+<img width="1078" height="613" alt="Sem título2" src="https://github.com/user-attachments/assets/5bbb8155-1097-4796-a034-be69ff69ebe0" />
 
 This means:
 
