@@ -158,32 +158,30 @@ Other Amadeus agents rely on it to safely act on real-world events.
         ↓
 [Amadeus Agents Consume]
 
-Concrete Example: AgroInsure Agent (Amadeus)
-AgroInsure Agent:
+## Concrete Example: AgroInsure Agent (Amadeus)
 
-Consumes verified frost or temperature breach events from Terra Dourada
+**AgroInsure Agent**:
 
-Reads deterministic state proofs
+- Consumes verified frost or temperature breach events from Terra Dourada  
+- Reads deterministic state proofs  
+- Executes insurance payouts automatically  
+- Settlement happens in minutes, not months  
 
-Executes insurance payout automatically
-
-Settlement happens in minutes, not months
-
-Without Terra Dourada, this agent cannot trust sensor data.
+Without Terra Dourada, this agent cannot trust sensor data.  
 With Terra Dourada, it can act immediately and safely.
 
-Strategic Roadmap (Future)
-Terra Dourada intentionally does not execute agent logic or inference.
-Its role is to define verifiable reality.
+---
 
-Future exploration may include deterministic computation layers
-where Amadeus agents execute identical WASM logic locally
+## Strategic Roadmap (Future)
+
+Terra Dourada intentionally does not execute agent logic or inference.  
+Its role is to define **verifiable reality**.
+
+Future exploration may include deterministic computation layers  
+where Amadeus agents execute identical WASM logic locally  
 over the same verified Terra Dourada state.
 
 This is a roadmap item, not a current dependency.
-
-One Sentence to Remember
-“In the physical world, immediacy protects truth. Waiting for consensus only creates delay — and delay creates fraud.”
 
 ---
 
