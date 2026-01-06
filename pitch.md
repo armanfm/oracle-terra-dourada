@@ -1,4 +1,4 @@
-# Pitch — Why Terra Dourada Needs to Be This Way
+# Why Terra Dourada Needs to Be This Way
 
 In agribusiness, most systems fail for the same reason:  
 **they trust at the wrong moment**.
