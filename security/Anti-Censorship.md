@@ -1,182 +1,161 @@
-# 🛡️ Terra Dourada Oracle — Anti-Censorship Architecture  
-**Offline-First • Sovereign Ledger • Persistent Queue • IPFS • No Intermediaries**
+# Terra Dourada Oracle — Anti-Censorship Architecture
 
-The Terra Dourada Oracle is engineered to be **uncensorable, unstoppable, and unerasable**, even under:
+**Offline-First • Local Sovereign Ledger • Persistent Queue • IPFS Integration • No Mandatory Intermediaries**
 
-- complete internet shutdown  
-- government interference  
-- backend failure  
-- network attacks  
-- DNS takedowns  
-- server censorship  
-- physical isolation  
+The Terra Dourada Oracle is designed to ensure **data persistence, user sovereignty, and auditability** under adverse conditions, including:
 
-**Core Philosophy:**  
-**No actor can stop a user from recording, storing, auditing, or exporting their own data.**
+- complete loss of internet connectivity  
+- backend or service failure  
+- DNS or infrastructure takedowns  
+- network-level interference  
+- physical isolation or remote environments  
+
+## Design Principle
+
+> **A user must always be able to record, store, audit, and export their own data, regardless of external availability.**
 
 ---
 
-# 🔥 1. Storage Anti-Censorship  
-## Local-First with PouchDB (Instant User Sovereignty)
+## 1. Local-First Storage (User-Sovereign Data Ingestion)
 
-All incoming data — sensors, serial, BLE, HID, WiFi, user input or network events — is **first written to PouchDB**:
+All incoming data — including sensor input, serial devices, BLE, HID, local WiFi, or manual user input — is **persisted locally first** using a local database (PouchDB):
 
 ```js
 await dbDados.put(formattedData);
 ```
 
-This ensures:
+This guarantees:
 
-- no backend dependency  
-- no internet dependency  
-- no external blockchain dependency  
-- no authority dependency  
+- no dependency on backend services  
+- no dependency on internet availability  
+- no dependency on blockchains or external ledgers  
+- immediate local ownership of data  
 
-**The data belongs to the user the moment it exists.**
+Data persistence occurs at creation time, not after transmission.
 
 ---
 
-# 🔥 2. Internet-Loss Anti-Censorship  
-## Sovereign Offline Queue + Automatic Retry
+## 2. Offline Queue and Deferred Transmission
 
-If there is no connection:
+When network connectivity is unavailable, events are written to a **persistent offline queue**:
 
 ```js
 await saveToOfflineQueue(data, type);
 ```
 
-This guarantees:
+The queue provides:
 
-- persistent offline queue  
-- unlimited retries  
-- full ledger trail  
-- detailed error history  
-- auto-resend when online  
-- optional manual resend  
-- scheduled resend cycles  
+- durable local storage  
+- unlimited retry attempts  
+- chronological ordering  
+- full error traceability  
+- automatic resend on reconnection  
+- optional manual or scheduled resend  
 
-**Nothing is lost. Nothing is blocked. Nothing depends on a server.**
+Data is never dropped due to connectivity constraints.
 
 ---
 
-# 🔥 3. Cryptographic Anti-Censorship  
-## Local Ledger with Chained Hash (Offline Blockchain)
+## 3. Local Cryptographic Ledger (Offline Integrity Chain)
 
-Each record stores:
+Each recorded event includes:
 
-- SHA-256  
-- previousHash  
+- SHA-256 hash  
+- previous record hash  
 - timestamp  
-- protocol  
-- payload  
+- protocol identifier  
+- payload reference  
 
-Guaranteeing:
+This produces:
 
-- immutability  
-- verifiable integrity  
-- independence from all networks  
+- append-only behavior  
+- deterministic integrity verification  
+- cryptographic chaining independent of any network  
 
-**The blockchain is local.  
-No authority can alter a single byte.**
-
----
-
-# 🔥 4. Transmission Anti-Censorship  
-## Smart Resend • Deduplication • CID Confirmation
-
-The oracle:
-
-- attempts submission  
-- fails → returns to the queue  
-- already sent → deduplicates by hash  
-- confirmed → stores the returned CID  
-
-Even if a server or government tries to “hide” transmissions:
-
-**The browser knows exactly what was sent and what wasn’t.**
+Integrity is enforced locally before any transmission occurs.
 
 ---
 
-# 🔥 5. Distributed Anti-Censorship  
-## IPFS — Immutable • Global • Ownerless
+## 4. Transmission Control and Deduplication
 
-After receiving proof, the backend returns:
+When connectivity is available, the oracle attempts submission:
+
+- failed transmissions return to the queue  
+- already-submitted events are deduplicated by hash  
+- confirmed submissions store the returned content identifier (CID)  
+
+The client maintains a complete local view of:
+
+- what was generated  
+- what was sent  
+- what was confirmed  
+- what remains pending  
+
+This prevents silent loss or suppression of data.
+
+---
+
+## 5. Distributed Persistence via IPFS
+
+Upon successful submission, the backend returns an IPFS content identifier:
 
 ```json
 { "cid": "bafy...xyz" }
 ```
 
-The oracle exposes:
+The data becomes accessible via:
 
-```arduino
+```
 https://ipfs.io/ipfs/<cid>
 ```
 
-IPFS is:
+IPFS provides:
 
-- global  
-- distributed  
-- redundant  
-- ownerless  
-- impossible to erase  
+- content-addressed persistence  
+- global distribution  
+- redundancy across nodes  
+- independence from single operators  
 
-**A state can shut down the internet,  
-but it cannot erase a propagated CID.**
+Once propagated, data availability no longer depends on a single system.
 
 ---
 
-# 🔥 6. Network Anti-Censorship  
-## Works Without DNS • Without Backend • Without Internet
+## 6. Operation Without Continuous Network Access
 
-Even fully offline, the user can:
+Even in fully offline environments, the oracle allows users to:
 
 - register events  
 - generate hashes  
-- maintain the ledger  
-- export everything  
+- maintain the local ledger  
 - manage the offline queue  
-- sign manually  
-- send later when desired  
+- export all records  
+- sign or transmit later when desired  
 
-The oracle runs in:
+The system is designed to operate in environments such as:
 
-- planes  
-- ships  
-- rural zones  
-- disaster zones  
-- authoritarian regimes  
-- isolated environments  
-
-**It survives without any network.**
+- aircraft or maritime contexts  
+- rural or remote areas  
+- disaster-response zones  
+- restricted or isolated networks  
 
 ---
 
-# 🔥 7. Social Anti-Censorship  
-## Zero Intermediaries • Zero Moderation • Zero Control
+## 7. No Mandatory Intermediaries
 
 The oracle enforces no:
 
-- content moderation  
-- corporate filters  
-- algorithmic censorship  
+- content moderation layer  
+- algorithmic filtering  
 - platform lock-in  
 - external service dependency  
 
-It is:
-
-- autonomous  
-- local  
-- sovereign  
-- user-controlled  
-
-**No third party stands between the user and their proof.**
+All control remains local to the user, with optional external publication.
 
 ---
 
-# 🔥 8. Physical Anti-Censorship  
-## Multi-Protocol Offline Intake: Serial • USB • HID • BLE • Local WiFi
+## 8. Multi-Protocol Offline Data Intake
 
-Using:
+The system supports local data ingestion via:
 
 - WebSerial  
 - WebUSB  
@@ -184,145 +163,48 @@ Using:
 - WebBluetooth  
 - Local WiFi polling  
 
-Even if telecommunications collapse, devices still deliver:
-
-- votes  
-- measurements  
-- events  
-- audits  
-- proofs  
-
-**All of it goes into the sovereign local ledger.**
+This allows direct intake from physical devices even in the absence of telecommunications infrastructure.
 
 ---
 
-# 🔥 9. Export Anti-Censorship  
-## One-Click Complete Backup
+## 9. Complete Data Export
 
-The user can export:
+At any time, the user may export:
 
-- ledger  
-- full backup  
-- proofs  
-- CIDs  
-- pending queue  
-- chronological history  
-- per-protocol data  
+- the full local ledger  
+- all cryptographic hashes  
+- associated CIDs  
+- pending queue contents  
+- chronological event history  
+- protocol-specific datasets  
 
-**Once exported,  
-no one can stop that proof from circulating.**
+Export is local, immediate, and unrestricted.
 
 ---
 
-# ⚠️ Economic Responsibility
+## 10. Data Retention and Integrity Policy
 
-Even though Terra Dourada is fully anti-censorship, transmitting proofs to the backend still generates a small economic cost to the user — even if optimized and aggregated.
+The system is append-only by design.
 
-**Sovereignty includes responsibility.**
+Recorded data is not modified or deleted by the system, ensuring:
 
----
+- consistent audit trails  
+- historical integrity  
+- verifiable accountability  
 
-# ⚖️ Principle of Truth — Evidence Must Never Be Deleted
-
-In Terra Dourada, no evidence is ever deleted.  
-Not because it is good or bad, but because it is true.
-
-Evidence may capture:
-
-- mistakes  
-- contradictions  
-- harmful actions  
-- crimes  
-- failures  
-- uncomfortable truth  
-
-**Its purpose is not to protect reputation,  
-but to protect the truth.**
+Interpretation, judgment, or enforcement occurs outside the system scope.
 
 ---
 
-## ✔️ Truth Produces Consequences
+## Summary
 
-Negative evidence is part of reality.  
-It leads to:
+The Terra Dourada Oracle provides:
 
-- responsibility  
-- justice  
-- accountability  
-- learning  
-- correction  
+- local-first persistence  
+- offline survivability  
+- cryptographic integrity at creation time  
+- deferred and verifiable transmission  
+- distributed persistence via IPFS  
+- user-controlled data lifecycle  
 
-**Erasing “bad” evidence = manufacturing impunity.**
-
----
-
-## ✔️ Without Immutability There Is No Justice
-
-If evidence can be erased, then anyone could:
-
-- hide wrongdoing  
-- rewrite events  
-- fabricate innocence  
-- destroy accountability  
-
-**A mutable system is a system of lies.  
-Terra Dourada fully rejects that.**
-
----
-
-## ✔️ The System Does Not Protect Anyone From Punishment
-
-Terra Dourada does not protect:
-
-- the guilty  
-- narratives  
-- reputations  
-- authorities  
-- power structures  
-
-**It protects only one thing:  
-the integrity of the evidence.**
-
----
-
-# 🛑 Evidence Exists to Prevent Impunity
-
-Bad evidence is as important as good evidence because it ensures no one can:
-
-- deny  
-- distort  
-- rewrite  
-- delete  
-- hide  
-- manipulate  
-
-**their own actions.**
-
-A system that keeps only “good things” is propaganda.  
-**Terra Dourada is not propaganda.  
-Terra Dourada is auditability.**
-
----
-
-# 📌 Philosophical Summary
-
-> “The truth, once recorded, must never be erased.  
-> What is bad must remain so its consequences can exist.  
-> Terra Dourada does not prevent punishment — it prevents impunity.”
-
----
-
-# 🏆 Final Statement
-
-The Terra Dourada Oracle is uncensorable, unstoppable, unerasable, and sovereign.  
-It guarantees:
-
-- personal sovereignty  
-- persistent data  
-- immutable evidence  
-- independent verification  
-- offline survival  
-- resistance to state-level attacks  
-- distributed redundancy  
-
-**A system that cannot be stopped, cannot be erased, and cannot be censored.**
+The architecture prioritizes **availability, integrity, and auditability**, independent of network conditions or external authorities.
