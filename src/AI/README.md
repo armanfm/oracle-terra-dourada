@@ -197,7 +197,7 @@ This software and documentation are proprietary.
 No permission is granted to use, copy, modify, distribute,
 or sell this material without explicit written consent.
 
-https://github.com/armanfm/Terra-Dourada-Fractal-GPT
+
 
 
 
