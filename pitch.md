@@ -143,23 +143,6 @@ Other Amadeus agents rely on it to safely act on real-world events.
 
 ---
 
-## Technical Architecture (High Level)
-
-```text
-[Agro / IoT Event]
-        ↓
-[Offline Sealing + Local Hash]
-        ↓
-[Terra Dourada Verification Agent (WASM)]
-        ↓
-[Verified Fact / State Proof]
-        ↓
-[On-chain Integrity Anchor]
-        ↓
-[Amadeus Agents Consume]
-
----
-
 ## Concrete Example: AgroInsure Agent (Amadeus)
 
 **AgroInsure Agent**:
@@ -190,3 +173,20 @@ This is a roadmap item, not a current dependency.
 ## One Sentence to Remember
 
 > **“In the physical world, immediacy protects truth. Waiting for consensus only creates delay — and delay creates fraud.”**
+
+## Technical Architecture (High Level)
+
+```text
+[Agro / IoT Event]
+        ↓
+[Offline Sealing + Local Hash]
+        ↓
+[Terra Dourada Verification Agent (WASM)]
+        ↓
+[Verified Fact / State Proof]
+        ↓
+[On-chain Integrity Anchor]
+        ↓
+[Amadeus Agents Consume]
+
+---
