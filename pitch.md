@@ -1,4 +1,6 @@
-# Why Terra Dourada Needs to Be This Way
+# Terra Dourada — Deterministic Verification Agent (Agro + IoT)
+
+## Pitch — Why Terra Dourada Needs to Be This Way
 
 In agribusiness, most systems fail for the same reason:  
 **they trust at the wrong moment**.
@@ -40,7 +42,7 @@ Usually there is:
 - a single operator  
 - a single system recording the data  
 
-If the weight is measured incorrectly, if the sensor fails, or if someone decides to “adjust” the value, there is no second opinion.  
+If the measurement is wrong, if the sensor fails, or if someone decides to “adjust” the value, there is no second opinion.  
 The entire downstream chain — payments, insurance, audits, disputes — depends on that single record.
 
 ---
@@ -53,18 +55,16 @@ You cannot place dozens of validators, judges, or blockchain nodes around a truc
 
 Worse than that, **waiting for consensus creates delay**.
 
-In the physical world, **time is part of the data**.
+In the physical world, **time is part of the data**:
 
 - the truck cannot wait  
 - the cargo cannot stop  
 - the harvest does not pause  
-- reality does not freeze while a system decides  
 
-When a system tries to wait for validation, confirmation, or approval before recording an event, it delays reality.  
-That delay becomes a new distortion window: re-measurements, out-of-context readings, and more room for human intervention.
-
-In other words:  
+When systems wait for validation before recording events,  
 **the consensus window becomes a distortion window**.
+
+Delay creates room for manipulation.
 
 ---
 
@@ -92,22 +92,22 @@ They **witness**.
 Later, when data is compared, coherence emerges:
 
 - timestamps converge  
-- readings make sense together  
+- readings align  
 - inconsistencies become visible  
 - missing records expose manipulation  
 
 This does not create perfect consensus.  
-It creates something far more realistic: **verifiable coherence**.
+It creates **verifiable coherence**.
 
 Fraud stops being “editing a number later”  
-and becomes **coordinating multiple independent devices at the exact same moment in the physical world** — something far more difficult, costly, and risky.
+and becomes **coordinating multiple independent devices at the same physical moment** — something far more difficult and costly.
 
 ---
 
-## What Terra Dourada Actually Guarantees
+## What Terra Dourada Guarantees
 
 Terra Dourada does not promise to eliminate human error or sensor failure.  
-It promises something more important:
+It guarantees something more important:
 
 **errors and fraud cannot be hidden afterward**.
 
@@ -122,12 +122,67 @@ In agribusiness, this means:
 - fairer payments  
 - automated decisions based on facts, not assumptions  
 
-Terra Dourada does not try to decide anything.
+Terra Dourada does not decide.  
+It does something more fundamental:
 
-It does something more fundamental:  
 **it ensures that everyone is looking at the same reality**.
 
-And when reality is trustworthy, everything built on top of it works better.
+---
+
+## How Terra Dourada Uses Amadeus (Explicit Integration)
+
+| Amadeus Primitive | Terra Dourada Usage |
+|------------------|---------------------|
+| WASM Runtime | Deterministic verification agent (“Robot”) |
+| State Proofs | Verified facts published as consumable state |
+| Agents | Amadeus agents consume verified reality |
+| uPoW (Future) | Batch proof verification and scaling (roadmap) |
+
+Terra Dourada acts as a **verification agent**, not a decision agent.  
+Other Amadeus agents rely on it to safely act on real-world events.
+
+---
+
+## Technical Architecture (High Level)
+
+```text
+[Agro / IoT Event]
+        ↓
+[Offline Sealing + Local Hash]
+        ↓
+[Terra Dourada Verification Agent (WASM)]
+        ↓
+[Verified Fact / State Proof]
+        ↓
+[On-chain Integrity Anchor]
+        ↓
+[Amadeus Agents Consume]
+Concrete Example: AgroInsure Agent (Amadeus)
+AgroInsure Agent:
+
+Consumes verified frost or temperature breach events from Terra Dourada
+
+Reads deterministic state proofs
+
+Executes insurance payout automatically
+
+Settlement happens in minutes, not months
+
+Without Terra Dourada, this agent cannot trust sensor data.
+With Terra Dourada, it can act immediately and safely.
+
+Strategic Roadmap (Future)
+Terra Dourada intentionally does not execute agent logic or inference.
+Its role is to define verifiable reality.
+
+Future exploration may include deterministic computation layers
+where Amadeus agents execute identical WASM logic locally
+over the same verified Terra Dourada state.
+
+This is a roadmap item, not a current dependency.
+
+One Sentence to Remember
+“In the physical world, immediacy protects truth. Waiting for consensus only creates delay — and delay creates fraud.”
 
 ---
 
