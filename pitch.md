@@ -158,6 +158,8 @@ Other Amadeus agents rely on it to safely act on real-world events.
         ↓
 [Amadeus Agents Consume]
 
+---
+
 ## Concrete Example: AgroInsure Agent (Amadeus)
 
 **AgroInsure Agent**:
