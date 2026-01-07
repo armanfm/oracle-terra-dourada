@@ -2,6 +2,8 @@
 
 https://github.com/armanfm/Terra-Dourada-Fractal-GPT
 
+https://terra-dourada-fractal-gpt.fly.dev/
+
 Terra Dourada addresses a **hard problem at the AI layer**, not at the infrastructure or hardware layer.
 
 Although the Robot and the core reasoning engine are **fully deterministic** and **do not rely on embeddings or probabilistic training**, the system is **not static**.
