@@ -1,6 +1,8 @@
-### Hard Hack — Deterministic Learning Without Embeddings
+### Deterministic AI Layer — Learning Without Embeddings
 
-Terra Dourada performs a **hard hack at the AI layer**, not at the infrastructure layer.
+https://github.com/armanfm/Terra-Dourada-Fractal-GPT
+
+Terra Dourada addresses a **hard problem at the AI layer**, not at the infrastructure or hardware layer.
 
 Although the Robot and the core reasoning engine are **fully deterministic** and **do not rely on embeddings or probabilistic training**, the system is **not static**.
 
@@ -33,7 +35,7 @@ In other words:
 > Terra Dourada does not “learn how to guess better”.  
 > It learns by **remembering new verified facts**.
 
-#### Why This Is a Hard Hack
+#### Why This Matters
 
 Most AI systems treat learning and inference as a single probabilistic process.
 
@@ -50,3 +52,5 @@ Learning happens — but only in a way that can be:
 - replayed
 - audited
 - independently reconstructed
+
+
