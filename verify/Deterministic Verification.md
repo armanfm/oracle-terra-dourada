@@ -20,4 +20,5 @@ Otherwise, execution is blocked.
 https://terra-dourada-brands.fly.dev/
 ---
 Reference implementation (deterministic verification engine):
+
 https://github.com/armanfm/Terra-Dourada-Fractal-GPT
