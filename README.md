@@ -1,31 +1,36 @@
-# 🌍 **Terra Dourada — Mobile Sovereign Oracle**
-### *The first sovereign post-quantum + zero-knowledge oracle running on a smartphone, offline-first, auditable, and collectively verified.*
+# 🌍 Terra Dourada — Mobile Sovereign Oracle
+
+The first sovereign **post-quantum + zero-knowledge oracle** running on a smartphone —  
+**offline-first**, **auditable**, and **collectively verified**.
+
+> **Status:** Oracle MVP completed (**v1.0.1**)  
+> **Current focus:** deterministic agents  
+> 📄 Technical architecture, security model, and roadmap are available in `/docs`.
 
 ---
 
-# 📘 1. Introduction
+## 📘 1. Introduction
 
-**Terra Dourada** is a sovereign cryptographic proof ecosystem built to operate fully independent from servers, institutions, or traditional blockchains.
+Terra Dourada is a **sovereign cryptographic proof ecosystem** built to operate fully independent from servers, institutions, or traditional blockchains.
 
-The **Mobile Oracle App** transforms an ordinary smartphone into a sovereign cryptographic unit capable of:
+The **Mobile Oracle App** transforms an ordinary smartphone into a **sovereign cryptographic unit** capable of:
 
 - collecting native sensors  
 - capturing photos and videos  
 - generating deterministic fingerprints  
 - producing integrity proofs  
-- operating offline  
+- operating fully offline  
 - verifying proofs from other users  
 - querying external data  
-- forming local cryptographic consensus  
+- forming **local cryptographic consensus**
 
-All **local-first**, preserving autonomy, integrity, and auditability.
+All **local-first**, preserving **autonomy**, **integrity**, and **auditability**.
+
 ---
-<img width="540" height="1200" alt="image" src="https://github.com/user-attachments/assets/32e24e5a-f22c-415a-992d-d907c5e0711c" />
----
 
-# 📱 2. Core Capabilities
+## 📱 2. Core Capabilities
 
-## ✔ Native Sensor Collection
+### ✔ Native Sensor Collection
 - camera / video  
 - GPS  
 - accelerometer  
@@ -35,14 +40,15 @@ All **local-first**, preserving autonomy, integrity, and auditability.
 - light sensor  
 - pedometer  
 - BLE  
-- automatic impact/vibration events  
+- automatic impact / vibration events  
 
 ---
 
-## ✔ Multimodal Proof Generation
+### ✔ Multimodal Proof Generation
+
 Each event includes:
 
-- media hash (photo/video)  
+- media hash (photo / video)  
 - location hash  
 - sensor fingerprint  
 - timestamp  
@@ -52,16 +58,17 @@ Each event includes:
 
 ---
 
-# 📸 3. Deterministic Media Fingerprint  
-### *Immutable and future-verifiable evidence.*
+## 📸 3. Deterministic Media Fingerprint
+
+**Immutable and future-verifiable evidence.**
 
 Every captured photo or video receives a:
 
-# 🔥 **Deterministic Media Fingerprint**
+🔥 **Deterministic Media Fingerprint**
 
 Meaning:
 
-- unique SHA256 hash  
+- unique SHA-256 hash  
 - immutable  
 - impossible to alter without detection  
 - verifiable years later  
@@ -69,26 +76,26 @@ Meaning:
 
 Auditors can:
 
-1. download the media  
-2. compute the hash  
-3. compare with the stored fingerprint  
-4. validate sensors and GPS  
-5. confirm PQC + ZK integrity  
+- download the media  
+- compute the hash  
+- compare with the stored fingerprint  
+- validate sensors and GPS  
+- confirm PQC + ZK integrity  
 
-**The fingerprint turns media into indestructible evidence.**
+The fingerprint turns media into **indestructible evidence**.
 
 ---
 
-# 📦 4. Offline-First Operation
+## 📦 4. Offline-First Operation
 
-The app works even with zero connectivity.
+The app works even with **zero connectivity**.
 
 Local storage includes:
 
 - `terra_dourada_sensors`  
 - `terra_dourada_events`  
 - `terra_dourada_media`  
-- `upload_queue`
+- `upload_queue`  
 
 When connectivity returns, data syncs automatically.
 
@@ -101,19 +108,20 @@ Offline-first unlocks:
 
 ---
 
-# 🤝 5. Peer-to-Peer Verification  
-### *Smartphones verifying smartphones.*
+## 🤝 5. Peer-to-Peer Verification
+
+**Smartphones verifying smartphones.**
 
 Terra Dourada allows:
 
-1. one user generating a proof  
-2. nearby smartphones independently verifying it  
-3. each device signing its validation locally  
-4. forming cryptographic consensus among participants  
+- one user generating a proof  
+- nearby smartphones independently verifying it  
+- each device signing its validation locally  
+- forming cryptographic consensus among participants  
 
 No servers.  
 No trusted oracles.  
-No institution in the middle.
+No institutions in the middle.
 
 This creates:
 
@@ -124,10 +132,11 @@ This creates:
 
 ---
 
-# 🔹 6. Nature of the Terra Dourada Oracle  
-### *This system does NOT compete with global price-consensus oracles.*
+## 🔹 6. Nature of the Terra Dourada Oracle
 
-Terra Dourada is **not** designed to replace or compete with:
+This system **does NOT compete** with global price-consensus oracles.
+
+Terra Dourada is **not designed to replace**:
 
 - Chainlink  
 - Pyth  
@@ -135,45 +144,31 @@ Terra Dourada is **not** designed to replace or compete with:
 - Witnet  
 - or any consensus-based market data feed  
 
-### ✔ It is not a price oracle  
+✔ It is **not a price oracle**.
+
 Offline-first architecture is **not suitable** for:
 
 - real-time price feeds  
 - high-frequency market updates  
 - global decentralized consensus  
 
-### ✔ Terra Dourada solves a different problem
+✔ Terra Dourada solves a **different problem**.
 
 It is a:
 
-- **logistical, field-level, context-aware oracle**  
+- logistical, field-level, context-aware oracle  
 - based on physical-world data captured by smartphones  
-- enriched with sensors, media, GPS, local signatures, PQC integrity  
+- enriched with sensors, media, GPS, and PQC integrity  
 - built for offline or unreliable environments  
-
-### ✔ Ideal for:
-
-- elections  
-- public auditing  
-- field operations (NGOs, UN, observers)  
-- human rights documentation  
-- environmental monitoring  
-- supply chain verification  
-- forensic media  
-- local IoT  
-- group-level peer verification  
-
-> **Terra Dourada is a sovereign logistical oracle,  
-> not a global consensus oracle.**  
 
 ---
 
-# 📡 7. External Data & API Oracle Capabilities
+## 📡 7. External Data & API Oracle Capabilities
 
 The app can query:
 
-- Solana/BTC/ETH prices  
-- Coingecko  
+- Solana / BTC / ETH prices  
+- CoinGecko  
 - Binance  
 - Jupiter  
 - weather APIs  
@@ -183,33 +178,28 @@ The app can query:
 
 Each fetched value can be:
 
-1. hashed  
-2. signed with PQC-HMAC  
-3. converted into a proof  
-4. audited or validated locally  
+- hashed  
+- signed with PQC-HMAC  
+- converted into a proof  
+- audited or validated locally  
 
 This provides **sovereign integrity of external data**, even without consensus between devices.
 
 ---
 
-# 🔌 8. Connectivity Without Wi-Fi or Bluetooth
+## 🔌 8. Connectivity Without Wi-Fi or Bluetooth
 
 The app can connect to external services or backends using:
 
-### ✔ USB Tethering  
-Phone becomes the PC’s network interface.
-
-### ✔ Mobile Hotspot  
-PC joins the phone’s temporary Wi-Fi network.
-
-### ✔ ADB Reverse (Developer Mode)  
-The phone accesses the backend as `localhost`.
+✔ **USB Tethering**  
+✔ **Mobile Hotspot**  
+✔ **ADB Reverse (Developer Mode)**  
 
 All methods work **without internet**.
 
 ---
 
-# 🧭 9. Real-World Use Cases
+## 🧭 9. Real-World Use Cases
 
 - on-site auditing  
 - electoral observation  
@@ -225,7 +215,7 @@ All methods work **without internet**.
 
 ---
 
-# 🧱 10. Why the Terra Dourada App Is Unique
+## 🧱 10. Why the Terra Dourada App Is Unique
 
 No other system offers:
 
@@ -238,11 +228,24 @@ No other system offers:
 - full sensor integration  
 - independent data capture without servers  
 - media + sensors + GPS fused into one proof  
-- ability to operate in isolated or censored environments  
+- operation in isolated or censored environments  
 
 It is:
 
-# 🔥 **a sovereign oracle you can carry in your pocket.**
+🔥 **a sovereign oracle you can carry in your pocket.**
+
+---
+
+## 📚 Documentation & Project Status
+
+- Oracle MVP completed (**v1.0.1**)  
+- Current focus: **deterministic agents**  
+- Security, cryptography, and trust model:
+  - `docs/security/`
+- Architecture and verification flow:
+  - `docs/architecture/`
+- Roadmap and milestones:
+  - `docs/roadmap/`
 
 ---
 
@@ -250,20 +253,8 @@ Copyright (c) 2025 Armando Freire (Terra Dourada)
 
 All rights reserved.
 
-This software and documentation are proprietary.
-No permission is granted to use, copy, modify, distribute,
-or sell this material without explicit written consent.
-
-
-
-
-
-
-
-
-
-
-
+This software and documentation are proprietary.  
+No permission is granted to use, copy, modify, distribute, or sell this material without explicit written consent.
 
 
 
