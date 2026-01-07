@@ -1,12 +1,13 @@
 # 🛡️ Terra Dourada Oracle — Completion & Next Steps
 
-## ✅ Current Status
+## ✅ Oracle MVP — Completion Status
+
 - **Name:** Terra Dourada Oracle  
-- **Version:** 1.0  
+- **Version:** 1.0.1 
 - **Status:** ✅ MVP Completed  
 - **Completion Date:** November 25, 2025  
 
-This document records the current completion state of the **Terra Dourada Oracle (MVP)** and explicitly lists the remaining steps toward production readiness.
+This document records the completion milestone of the **Terra Dourada Oracle (MVP)** and explicitly lists the remaining steps toward full production readiness.
 
 ---
 
@@ -40,7 +41,7 @@ This document records the current completion state of the **Terra Dourada Oracle
 
 ---
 
-## 📌 Next Steps
+## 📌 Next Steps Toward Production
 
 ### 1. ✅ Final Testing in Real Environments
 - ✅ Testing with simulated sensor data
@@ -81,10 +82,30 @@ This document records the current completion state of the **Terra Dourada Oracle
 
 ---
 
-## 🧠 Final Statement
+## 🧠 Project Transition — Current Focus
+
+Following the completion of the Oracle MVP, the Terra Dourada project has entered a new phase.
+
+The current focus is the implementation of **deterministic agents**.
+
+These agents:
+- consume only globally authorized, deterministic artifacts
+- operate within explicit factual boundaries
+- do not generate or infer truth
+- execute workflows reproducibly over a known and fixed state
+
+This phase builds directly on the completed Oracle MVP and extends the system
+from **verification** to **deterministic execution**.
+
+---
+
+## 🏁 Final Statement
 
 The **Terra Dourada Oracle (MVP)** is complete.
 
-It is a **censorship-resistant**, **offline-first**, and **audit-proof** system designed to protect the truth — **not reputations**.
+It is a **censorship-resistant**, **offline-first**, and **audit-proof** system designed to protect **truth**, not reputations.
 
-The technical core is fully implemented, validated in simulated environments, and ready for controlled evolution toward production deployment.
+The technical core is fully implemented, validated in simulated environments,
+and ready for controlled evolution toward production deployment and
+deterministic agent execution.
+
