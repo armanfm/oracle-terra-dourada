@@ -2,13 +2,10 @@
 
 https://github.com/armanfm/Terra-Dourada-Fractal-GPT
 
-🌐 **Live Demo**
-You can interact with the Terra Dourada Fractal GPT here:  
+
 👉 https://terra-dourada-fractal-gpt.fly.dev/
 
-🧠 **Training Docs**
-Full training logic, pipeline and explanation:
-👉 https://armanfm.github.io/Terra-Dourada/treino
+
 
 Terra Dourada addresses a **hard problem at the AI layer**, not at the infrastructure or hardware layer.
 
