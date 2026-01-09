@@ -1,6 +1,5 @@
 ### Deterministic AI Layer — Learning Without Embeddings
 
-https://github.com/armanfm/Terra-Dourada-Fractal-GPT
 ---
 
 🌐 **Live Demo**
