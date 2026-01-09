@@ -179,3 +179,20 @@ Verification and settlement are external; memory and reasoning are sovereign.
 ## One-Sentence Summary
 
 **FXL Turbo is a deterministic engine that compresses verified events into a reproducible binary memory, enabling autonomous agents to reason over their entire history without probabilistic learning, reprocessing, or external databases.**
+
+#### Deterministic Similarity — Live Execution Evidence
+
+Below is a real execution output of the FXL Turbo engine running locally.
+The same inputs always produce the same similarity metrics, proving
+deterministic behavior and auditability.
+
+Metrics shown:
+- Byte-level similarity
+- SHA256 bit similarity
+- Base64 comparison
+- Combined deterministic score
+- Polynomial-adjusted stability score
+
+No probabilistic embeddings. No external databases. No randomness.
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2ea56d09-9d7b-4a24-a31e-05287c5dc3ee" />
+
