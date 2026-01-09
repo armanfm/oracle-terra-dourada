@@ -176,6 +176,9 @@ Verification and settlement are external; memory and reasoning are sovereign.
 
 ---
 
+## USE CASE
+---
+
 ## One-Sentence Summary
 
 **FXL Turbo is a deterministic engine that compresses verified events into a reproducible binary memory, enabling autonomous agents to reason over their entire history without probabilistic learning, reprocessing, or external databases.**
