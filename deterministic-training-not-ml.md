@@ -177,6 +177,27 @@ Verification and settlement are external; memory and reasoning are sovereign.
 ---
 
 ## USE CASE
+
+
+### USE CASE — Deterministic State Production vs. Consumption
+
+FXL Turbo operates in **two intentionally decoupled phases**:
+
+#### 1) Deterministic State Production
+FXL Turbo processes **verified events** and deterministically evolves a compact binary memory (`mind.bin`).  
+This phase computes similarity metrics, stability signals, and context constraints, and **produces or updates the binary state**.  
+State production is controlled, reproducible, and fully auditable.
+
+#### 2) Deterministic State Consumption (Read-Only)
+Downstream systems load a **precomputed `mind.bin`** and perform **deterministic similarity queries**.  
+No learning occurs, no state is modified, and no probabilistic inference is involved.  
+This phase is strictly **read-only recall** over a sovereign binary state.
+
+The images below demonstrate **deterministic state consumption**, not live state production.  
+They show how systems can reason over a precomputed memory **without recomputing embeddings, reprocessing history, or modifying state**.
+
+> **Design note:** State production and state consumption are decoupled by design to ensure auditability, portability, and deterministic behavior across environments.
+
 ---
 
 ## One-Sentence Summary
