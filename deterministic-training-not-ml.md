@@ -176,56 +176,53 @@ Verification and settlement are external; memory and reasoning are sovereign.
 
 ---
 
-### USE CASE — Deterministic State Production vs. Consumption
+#### USE CASE — Deterministic State Production vs. Consumption
 
 FXL Turbo operates in **two intentionally decoupled phases**:
 
-#### 1) Deterministic State Production
+### 1) Deterministic State Production
 FXL Turbo processes **verified events** and deterministically evolves a compact binary memory (`mind.bin`).  
 This phase computes similarity metrics, stability signals, and context constraints, and **produces or updates the binary state**.  
 State production is controlled, reproducible, and fully auditable.
 
-#### 2) Deterministic State Consumption (Read-Only)
+### 2) Deterministic State Consumption (Read-Only)
 Downstream systems load a **precomputed `mind.bin`** and perform **deterministic similarity queries**.  
 No learning occurs, no state is modified, and no probabilistic inference is involved.  
-This phase is strictly **read-only recall** over a sovereign binary state.
+This phase consists strictly of **read-only recall** over a sovereign binary state.
 
 The images below demonstrate **deterministic state consumption**, not live state production.  
 They show how systems can reason over a precomputed memory **without recomputing embeddings, reprocessing history, or modifying state**.
 
-> **Design note:** State production and state consumption are decoupled by design to ensure auditability, portability, and deterministic behavior across environments.
+> **Design note:** State production and state consumption are intentionally decoupled to ensure auditability, portability, and deterministic behavior across environments.
+
+---
+
 
 ---
 
 ## One-Sentence Summary
+FXL Turbo is a deterministic engine that compresses verified events into a reproducible binary memory, enabling autonomous agents to reason over their entire history **without probabilistic learning, reprocessing, or external databases**.
+## Deterministic Similarity — Binary State Usage Evidence
+Below is real output from systems that **consume a binary state (`mind.bin`) previously produced by the FXL Turbo engine**.  
+The same inputs always produce the same similarity metrics, proving deterministic behavior and auditability.
 
-**FXL Turbo is a deterministic engine that compresses verified events into a reproducible binary memory, enabling autonomous agents to reason over their entire history without probabilistic learning, reprocessing, or external databases.**
-
-#### Deterministic Similarity — Live Execution Evidence
-
-Below is a real execution output of the FXL Turbo engine running locally.
-The same inputs always produce the same similarity metrics, proving
-deterministic behavior and auditability.
-
-Metrics shown:
-- Byte-level similarity
-- SHA256 bit similarity
-- Base64 comparison
-- Combined deterministic score
-- Polynomial-adjusted stability score
+**Metrics shown:**
+- Byte-level similarity  
+- SHA256 bit similarity  
+- Base64 comparison  
+- Combined deterministic score  
+- Polynomial-adjusted stability score  
 
 No probabilistic embeddings. No external databases. No randomness.
+
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2ea56d09-9d7b-4a24-a31e-05287c5dc3ee" />
 
 ---
-#### Deterministic Agent Memory — Live System Example
 
-The image below shows a production system (Terra Dourada Brands)
-using the same deterministic engine (FXL Turbo).
+## Deterministic Agent Memory — Production System Example
+The image below shows a production system (Terra Dourada Brands) using the same deterministic engine (FXL Turbo).
 
-A pre-trained binary memory (mind.bin / terramin_v1) is loaded,
-and similarity queries are executed instantly without embeddings,
-vector databases, or probabilistic inference.
+A precomputed binary memory (`mind.bin / terramin_v1`) is loaded, and similarity queries are executed instantly **without embeddings, vector databases, or probabilistic inference**.
 
 The agent reasons over its entire historical state using
 explicit, multi-metric deterministic similarity.
