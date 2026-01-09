@@ -196,3 +196,18 @@ Metrics shown:
 No probabilistic embeddings. No external databases. No randomness.
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2ea56d09-9d7b-4a24-a31e-05287c5dc3ee" />
 
+---
+#### Deterministic Agent Memory — Live System Example
+
+The image below shows a production system (Terra Dourada Brands)
+using the same deterministic engine (FXL Turbo).
+
+A pre-trained binary memory (mind.bin / terramin_v1) is loaded,
+and similarity queries are executed instantly without embeddings,
+vector databases, or probabilistic inference.
+
+The agent reasons over its entire historical state using
+explicit, multi-metric deterministic similarity.
+<img width="1105" height="737" alt="image" src="https://github.com/user-attachments/assets/8c58e3a5-4689-4466-a5d6-fd60d626baca" />
+
+
