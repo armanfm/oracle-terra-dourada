@@ -176,9 +176,6 @@ Verification and settlement are external; memory and reasoning are sovereign.
 
 ---
 
-## USE CASE
-
-
 ### USE CASE — Deterministic State Production vs. Consumption
 
 FXL Turbo operates in **two intentionally decoupled phases**:
