@@ -227,7 +227,28 @@ A precomputed binary memory (`mind.bin / terramin_v1`) is loaded, and similarity
 The agent reasons over its entire historical state using
 explicit, multi-metric deterministic similarity.
 <img width="1105" height="737" alt="image" src="https://github.com/user-attachments/assets/8c58e3a5-4689-4466-a5d6-fd60d626baca" />
+### Interactive Test Link (Demonstration Only)
 
+An interactive test instance is available at:
+
+https://terra-dourada-gpt-green-butterfly-3484.fly.dev/
+
+This link demonstrates **deterministic state consumption** over a precomputed binary memory (`mind.bin / terramin_v1`) using the same FXL Turbo engine.
+
+**Important clarification:**
+
+- This is **not** the Terra Dourada Oracle protocol
+- This is **not** the full verification or authorization pipeline
+- This is **not** a production oracle deployment
+
+It is a **use-case demonstration** showing how deterministic agent memory can be loaded, queried, and reasoned over **without embeddings, vector databases, probabilistic inference, or external services**.
+
+The purpose of this instance is to provide a concrete, inspectable example of **deterministic memory consumption**, not to represent the complete system.
+
+https://terra-dourada-brands.fly.dev/
+
+
+---
 
 ## Execution Evidence — Deterministic State Production (Local Run)
 
