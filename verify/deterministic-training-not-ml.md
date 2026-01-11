@@ -231,7 +231,7 @@ explicit, multi-metric deterministic similarity.
 
 An interactive test instance is available at:
 
-https://terra-dourada-gpt-green-butterfly-3484.fly.dev/
+https://terra-dourada-brands.fly.dev/
 
 This link demonstrates **deterministic state consumption** over a precomputed binary memory (`mind.bin / terramin_v1`) using the same FXL Turbo engine.
 
@@ -244,8 +244,6 @@ This link demonstrates **deterministic state consumption** over a precomputed bi
 It is a **use-case demonstration** showing how deterministic agent memory can be loaded, queried, and reasoned over **without embeddings, vector databases, probabilistic inference, or external services**.
 
 The purpose of this instance is to provide a concrete, inspectable example of **deterministic memory consumption**, not to represent the complete system.
-
-https://terra-dourada-brands.fly.dev/
 
 
 ---
