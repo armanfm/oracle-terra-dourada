@@ -202,3 +202,26 @@ This project demonstrates that:
 This approach does not replace blockchains or zero-knowledge systems.  
 It addresses a deeper layer: **how computation itself becomes a verifiable fact**.
 
+## Final Clarification: What This Project Does — and Does Not Do
+
+This project does not aim to reduce computation, eliminate execution cost,
+or replace blockchain consensus mechanisms.
+
+All computation still occurs in full.
+
+The contribution of this work is different:
+
+**It makes computation auditable rather than trusted.**
+
+Execution is performed off-chain without assuming executor honesty.
+Verification is achieved through replay and external observation, not by
+inline validation or self-reported proofs.
+
+As a result:
+- Computation is not removed.
+- Trust is not shifted to the executor.
+- Blockchain logic remains focused on arbitration and state commitment.
+
+This design intentionally favors auditability over real-time validation.
+
+
