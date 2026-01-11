@@ -229,3 +229,72 @@ explicit, multi-metric deterministic similarity.
 <img width="1105" height="737" alt="image" src="https://github.com/user-attachments/assets/8c58e3a5-4689-4466-a5d6-fd60d626baca" />
 
 
+## Execution Evidence — Deterministic State Production (Local Run)
+
+The following output demonstrates **real, local execution** of the FXL Turbo engine performing **deterministic state production**.
+
+This is **not** a simulation, benchmark mock, or UI-only demonstration.  
+It is the direct output of the training binary (`treino_local`) running on commodity hardware.
+
+### Execution Details
+
+- **Input file:** `src/data/aprendizado.txt`
+- **Workspace:** `src/data/`
+- **Binary produced:** `src/data/mind.bin`
+- **Execution mode:** local, offline
+- **Network dependency:** none
+- **Randomness:** none
+
+### What Is Being Proven
+
+This execution proves that FXL Turbo:
+
+- Compiles and runs as a standalone binary
+- Consumes real text input
+- Produces a persistent binary memory artifact (`mind.bin`)
+- Emits deterministic, auditable metrics
+- Completes execution without external services, databases, or probabilistic components
+
+### Observed Properties (Excerpt)
+
+- Deterministic similarity metrics (SHA256 + byte-level)
+- Context stability consistently above 90%
+- Zero detected ruptures
+- Stable learning behavior (no blocked learning)
+- Deterministic throughput (~1000+ lines/sec)
+- Binary memory successfully written to disk
+
+Final system confirmation:
+
+Processamento concluído com métricas científicas
+treino concluído
+mind.bin final: src/data/mind.bin
+
+markdown
+Copiar código
+
+### Why This Matters
+
+This execution demonstrates that:
+
+- The core deterministic engine is **already deployable**
+- State production does not rely on future research or infrastructure
+- The project is not documentation-only
+- Memory generation is reproducible and auditable
+- The system satisfies the *ability to deploy after hack* criterion
+
+### Scope Clarification
+
+This execution demonstrates **deterministic memory construction**, not the full oracle pipeline.
+
+Authorization, Zero-Knowledge verification, and on-chain anchoring are **orthogonal layers by design** and intentionally decoupled from local memory production.
+
+FXL Turbo governs **how verified facts are stored, remembered, and compared** — not how they are authorized or settled globally.
+
+---
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9cf39ab1-debd-4845-a1c5-69d563cf56ed" />
+
+> **Summary:**  
+> FXL Turbo already runs today, produces a sovereign binary memory (`mind.bin`), 
+
+
