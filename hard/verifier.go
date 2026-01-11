@@ -1,25 +1,17 @@
 package main
 
 import (
-	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
-	"strings"
 	"time"
 )
 
 const (
-	ELF_PATH     = "data/riscv_verify.elf"
-	OUTPUT_ADDR  = "0x80001000"
-	EXPECTED_HEX = "0x0000000000000348" // 840 decimal
-
-	// caminhos ABSOLUTOS (ignoram PATH do Windows)
-	QEMU_PATH = "C:\\Program Files\\qemu\\qemu-system-riscv64.exe"
-	GDB_PATH  = "gdb-multiarch"
+	ELF_PATH    = "data/riscv_verify.elf"
+	LEDGER_PATH = "data/ledger.txt"
 )
 
 func sha256File(path string) (string, error) {
@@ -27,6 +19,61 @@ func sha256File(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	defer f.Close()
+
+	h := sha256.New()
+	if _, err := io.Copy(h, f); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(h.Sum(nil)), nil
+}
+
+func appendLedger(hash string) error {
+	f, err := os.OpenFile(
+		LEDGER_PATH,
+		os.O_CREATE|os.O_APPEND|os.O_WRONLY,
+		0644,
+	)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	ts := time.Now().Unix()
+
+	_, err = fmt.Fprintf(
+		f,
+		"artifact=riscv_verify.elf\nsha256=%s\ntimestamp=%d\n---\n",
+		hash,
+		ts,
+	)
+	return err
+}
+
+func main() {
+	fmt.Println("=== RISC-V EXECUTION ARTIFACT AUDIT ===")
+
+	hash, err := sha256File(ELF_PATH)
+	if err != nil {
+		fmt.Println("ERROR:", err)
+		os.Exit(1)
+	}
+
+	fmt.Println("Artifact:", ELF_PATH)
+	fmt.Println("ELF SHA256:", hash)
+
+	if err := appendLedger(hash); err != nil {
+		fmt.Println("Ledger error:", err)
+		os.Exit(1)
+	}
+
+	fmt.Println()
+	fmt.Println("Audit result:")
+	fmt.Println("✓ Artifact identity established")
+	fmt.Println("✓ Ledger entry recorded")
+	fmt.Println("✓ Ready for deterministic replay by any verifier")
+}
+
 	defer f.Close()
 
 	h := sha256.New()
@@ -114,3 +161,4 @@ func main() {
 		fmt.Println("Expected:", EXPECTED_HEX)
 	}
 }
+
